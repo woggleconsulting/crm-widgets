@@ -1,0 +1,13 @@
+{
+  "service": "CRM",
+  "components": {
+    "widgets": [
+      {
+        "location": "everywhere",
+        "name": "Function Exporter",
+        "url": "/widget.html",
+        "logo": ""
+      }
+    ]
+  }
+}
