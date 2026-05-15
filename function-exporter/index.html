@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Function Exporter</title>
+  <script src="https://live.zwidgets.com/js-sdk/1.2/ZohoEmbededAppSDK.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface-hover: #22263a;
+      --border: #2a2e3f;
+      --text: #e2e4ea;
+      --text-muted: #8b8fa3;
+      --accent: #6c5ce7;
+      --accent-hover: #7c6ff7;
+      --accent-dim: rgba(108, 92, 231, 0.15);
+      --success: #00b894;
+      --warn: #fdcb6e;
+      --danger: #e17055;
+      --radius: 8px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header h1 span {
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 7px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--surface-hover); border-color: var(--accent); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn:disabled:hover { background: var(--surface); border-color: var(--border); }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .btn-primary:disabled:hover { background: var(--accent); border-color: var(--accent); }
+
+    .btn-success {
+      background: var(--success);
+      border-color: var(--success);
+      color: #fff;
+    }
+
+    .status-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .status-bar .count {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .progress-wrap {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-bar input {
+      flex: 1;
+      min-width: 200px;
+      padding: 7px 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .filter-bar input:focus { border-color: var(--accent); }
+    .filter-bar input::placeholder { color: var(--text-muted); }
+
+    .filter-bar select {
+      padding: 7px 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .func-list {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .func-list-header {
+      display: grid;
+      grid-template-columns: 36px 1fr 140px 100px 80px;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      align-items: center;
+    }
+
+    .func-row {
+      display: grid;
+      grid-template-columns: 36px 1fr 140px 100px 80px;
+      gap: 8px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+      transition: background 0.1s;
+    }
+    .func-row:last-child { border-bottom: none; }
+    .func-row:hover { background: var(--surface-hover); }
+
+    .func-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .func-name {
+      font-weight: 500;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .func-category {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .cat-standalone { background: rgba(108,92,231,0.15); color: #a29bfe; }
+    .cat-workflow { background: rgba(0,184,148,0.15); color: #55efc4; }
+    .cat-button { background: rgba(253,203,110,0.15); color: #ffeaa7; }
+    .cat-blueprint { background: rgba(116,185,255,0.15); color: #74b9ff; }
+    .cat-schedule { background: rgba(225,112,85,0.15); color: #fab1a0; }
+    .cat-related_list { background: rgba(162,155,254,0.15); color: #a29bfe; }
+    .cat-validation { background: rgba(253,121,168,0.15); color: #fd79a8; }
+    .cat-other { background: rgba(139,143,163,0.15); color: #8b8fa3; }
+
+    .func-lang {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .func-status {
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-fetched { background: var(--success); }
+    .dot-pending { background: var(--text-muted); }
+    .dot-error { background: var(--danger); }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 32px; margin-bottom: 12px; }
+    .empty-state p { font-size: 13px; }
+
+    .log-panel {
+      margin-top: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      max-height: 120px;
+      overflow-y: auto;
+      padding: 8px 12px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: none;
+    }
+    .log-panel.visible { display: block; }
+    .log-entry { padding: 1px 0; }
+    .log-entry.error { color: var(--danger); }
+    .log-entry.success { color: var(--success); }
+    .log-entry.info { color: var(--accent); }
+
+    .select-all-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .select-all-wrap input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>
+      Function Exporter
+      <span id="orgName">loading...</span>
+    </h1>
+    <div class="controls">
+      <button class="btn" id="btnRefresh" onclick="loadFunctions()" disabled>
+        &#x21bb; Refresh
+      </button>
+      <button class="btn btn-primary" id="btnFetch" onclick="fetchAllCode()" disabled>
+        &#x2193; Fetch Code
+      </button>
+      <button class="btn btn-success" id="btnExport" onclick="exportJSON()" disabled>
+        &#x2913; Export JSON
+      </button>
+    </div>
+  </div>
+
+  <div class="status-bar" id="statusBar">
+    <span>Initializing...</span>
+  </div>
+
+  <div class="filter-bar" id="filterBar" style="display:none;">
+    <input type="text" id="searchInput" placeholder="Search functions..." oninput="applyFilters()">
+    <select id="categoryFilter" onchange="applyFilters()">
+      <option value="">All Categories</option>
+    </select>
+  </div>
+
+  <div class="func-list" id="funcList" style="display:none;">
+    <div class="func-list-header">
+      <div class="select-all-wrap">
+        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" checked>
+      </div>
+      <div>Function Name</div>
+      <div>Category</div>
+      <div>Language</div>
+      <div>Status</div>
+    </div>
+    <div id="funcRows"></div>
+  </div>
+
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="icon">&#x1f4e6;</div>
+    <p>No functions found matching your filters.</p>
+  </div>
+
+  <div class="log-panel" id="logPanel"></div>
+
+  <script>
+    // ---- State ----
+    let allFunctions = [];
+    let functionCode = {};
+    let filteredIds = [];
+    let orgInfo = {};
+
+    // ---- Init ----
+    ZOHO.embeddedApp.on("PageLoad", function(data) {
+      // no-op, we init on SDK ready
+    });
+
+    ZOHO.embeddedApp.init().then(function() {
+      log("SDK initialized", "info");
+      loadOrgInfo();
+      loadFunctions();
+    });
+
+    // ---- Org Info ----
+    function loadOrgInfo() {
+      ZOHO.CRM.CONFIG.getOrgInfo().then(function(data) {
+        if (data && data.org && data.org.length > 0) {
+          orgInfo = data.org[0];
+          document.getElementById("orgName").textContent = orgInfo.company_name || orgInfo.domain || "CRM";
+        } else if (data && data.org) {
+          orgInfo = data.org;
+          document.getElementById("orgName").textContent = orgInfo.company_name || orgInfo.domain || "CRM";
+        }
+      }).catch(function(err) {
+        log("Could not load org info: " + JSON.stringify(err), "error");
+        document.getElementById("orgName").textContent = "CRM";
+      });
+    }
+
+    // ---- Load Function List ----
+    function loadFunctions() {
+      setStatus("Loading functions...");
+      document.getElementById("btnRefresh").disabled = true;
+      document.getElementById("btnFetch").disabled = true;
+      document.getElementById("btnExport").disabled = true;
+      allFunctions = [];
+      functionCode = {};
+
+      fetchFunctionPage(1);
+    }
+
+    function fetchFunctionPage(page) {
+      var reqUrl = "/crm/v2/settings/functions?type=org&page=" + page + "&per_page=200";
+      ZOHO.CRM.HTTP.get({ url: reqUrl }).then(function(resp) {
+        var data;
+        if (typeof resp === "string") {
+          try { data = JSON.parse(resp); } catch(e) { data = resp; }
+        } else {
+          data = resp;
+        }
+
+        var funcs = data.functions || data.custom_functions || [];
+        if (funcs.length === 0 && page === 1) {
+          // Try alternate endpoint
+          fetchFunctionAlt();
+          return;
+        }
+
+        for (var i = 0; i < funcs.length; i++) {
+          allFunctions.push(normFunc(funcs[i]));
+        }
+
+        var info = data.info;
+        if (info && info.more_records === true) {
+          fetchFunctionPage(page + 1);
+        } else {
+          onFunctionsLoaded();
+        }
+      }).catch(function(err) {
+        log("Error loading functions (page " + page + "): " + JSON.stringify(err), "error");
+        if (page === 1) {
+          fetchFunctionAlt();
+        } else {
+          onFunctionsLoaded();
+        }
+      });
+    }
+
+    function fetchFunctionAlt() {
+      log("Trying alternate endpoint...", "info");
+      var reqUrl = "/crm/v2.2/settings/functions?type=org&page=1&per_page=200";
+      ZOHO.CRM.HTTP.get({ url: reqUrl }).then(function(resp) {
+        var data;
+        if (typeof resp === "string") {
+          try { data = JSON.parse(resp); } catch(e) { data = resp; }
+        } else {
+          data = resp;
+        }
+
+        var funcs = data.functions || data.custom_functions || [];
+        for (var i = 0; i < funcs.length; i++) {
+          allFunctions.push(normFunc(funcs[i]));
+        }
+        onFunctionsLoaded();
+      }).catch(function(err) {
+        log("Alternate endpoint also failed: " + JSON.stringify(err), "error");
+        setStatus("Failed to load functions. Make sure you have admin access.");
+        document.getElementById("btnRefresh").disabled = false;
+      });
+    }
+
+    function normFunc(f) {
+      return {
+        id: f.id || "",
+        display_name: f.display_name || f.name || "",
+        api_name: f.api_name || "",
+        category: (f.category || f.type || "other").toLowerCase(),
+        language: f.language || "deluge",
+        description: f.description || "",
+        created_by: f.created_by ? (f.created_by.name || "") : "",
+        created_time: f.created_time || "",
+        modified_by: f.modified_by ? (f.modified_by.name || "") : "",
+        modified_time: f.modified_time || "",
+        _raw: f
+      };
+    }
+
+    function onFunctionsLoaded() {
+      log("Loaded " + allFunctions.length + " functions", "success");
+      setStatus('<span class="count">' + allFunctions.length + '</span> functions found');
+      document.getElementById("btnRefresh").disabled = false;
+      document.getElementById("btnFetch").disabled = allFunctions.length === 0;
+
+      populateCategoryFilter();
+      applyFilters();
+      document.getElementById("filterBar").style.display = allFunctions.length > 0 ? "flex" : "none";
+      document.getElementById("funcList").style.display = allFunctions.length > 0 ? "block" : "none";
+    }
+
+    // ---- Category filter ----
+    function populateCategoryFilter() {
+      var cats = {};
+      for (var i = 0; i < allFunctions.length; i++) {
+        cats[allFunctions[i].category] = true;
+      }
+      var sel = document.getElementById("categoryFilter");
+      sel.innerHTML = '<option value="">All Categories</option>';
+      Object.keys(cats).sort().forEach(function(c) {
+        var opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = c.charAt(0).toUpperCase() + c.slice(1).replace(/_/g, " ");
+        sel.appendChild(opt);
+      });
+    }
+
+    // ---- Filtering & Rendering ----
+    function applyFilters() {
+      var search = document.getElementById("searchInput").value.toLowerCase();
+      var cat = document.getElementById("categoryFilter").value;
+
+      filteredIds = [];
+      for (var i = 0; i < allFunctions.length; i++) {
+        var f = allFunctions[i];
+        if (cat && f.category !== cat) continue;
+        if (search && f.display_name.toLowerCase().indexOf(search) === -1 && f.api_name.toLowerCase().indexOf(search) === -1) continue;
+        filteredIds.push(i);
+      }
+
+      renderRows();
+    }
+
+    function renderRows() {
+      var container = document.getElementById("funcRows");
+      container.innerHTML = "";
+
+      if (filteredIds.length === 0) {
+        document.getElementById("funcList").style.display = "none";
+        document.getElementById("emptyState").style.display = "block";
+        return;
+      }
+
+      document.getElementById("funcList").style.display = "block";
+      document.getElementById("emptyState").style.display = "none";
+
+      for (var i = 0; i < filteredIds.length; i++) {
+        var idx = filteredIds[i];
+        var f = allFunctions[idx];
+        var hasCode = functionCode[f.id] !== undefined;
+        var hasError = functionCode[f.id] === null;
+
+        var catClass = "cat-other";
+        if (f.category === "standalone") catClass = "cat-standalone";
+        else if (f.category === "workflow") catClass = "cat-workflow";
+        else if (f.category === "button") catClass = "cat-button";
+        else if (f.category === "blueprint") catClass = "cat-blueprint";
+        else if (f.category === "schedule" || f.category === "schedules") catClass = "cat-schedule";
+        else if (f.category === "related_list" || f.category === "relatedlist") catClass = "cat-related_list";
+        else if (f.category === "validation") catClass = "cat-validation";
+
+        var statusDot = hasCode ? "dot-fetched" : hasError ? "dot-error" : "dot-pending";
+        var statusText = hasCode ? "Ready" : hasError ? "Error" : "Pending";
+
+        var row = document.createElement("div");
+        row.className = "func-row";
+        row.innerHTML =
+          '<div><input type="checkbox" data-idx="' + idx + '" class="func-check" checked></div>' +
+          '<div class="func-name" title="' + escHtml(f.api_name) + '">' + escHtml(f.display_name) + '</div>' +
+          '<div><span class="func-category ' + catClass + '">' + escHtml(f.category) + '</span></div>' +
+          '<div class="func-lang">' + escHtml(f.language) + '</div>' +
+          '<div class="func-status"><span class="dot ' + statusDot + '"></span> ' + statusText + '</div>';
+        container.appendChild(row);
+      }
+    }
+
+    // ---- Select All ----
+    function toggleSelectAll() {
+      var checked = document.getElementById("selectAll").checked;
+      var boxes = document.querySelectorAll(".func-check");
+      for (var i = 0; i < boxes.length; i++) {
+        boxes[i].checked = checked;
+      }
+    }
+
+    // ---- Fetch Code ----
+    function fetchAllCode() {
+      var selected = getSelectedIndices();
+      if (selected.length === 0) {
+        log("No functions selected", "error");
+        return;
+      }
+
+      document.getElementById("btnFetch").disabled = true;
+      document.getElementById("btnExport").disabled = true;
+      showLog();
+      log("Fetching code for " + selected.length + " functions...", "info");
+
+      var total = selected.length;
+      var done = 0;
+
+      setStatus(
+        'Fetching: <span class="count">0</span> / ' + total +
+        '<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>'
+      );
+
+      // Process sequentially to avoid rate limits
+      fetchNext(selected, 0, total);
+    }
+
+    function fetchNext(list, i, total) {
+      if (i >= list.length) {
+        onFetchComplete(total);
+        return;
+      }
+
+      var idx = list[i];
+      var f = allFunctions[idx];
+
+      // Try multiple endpoints to get the function code
+      fetchFuncCode(f).then(function(code) {
+        functionCode[f.id] = code;
+        log("Fetched: " + f.display_name, "success");
+        updateProgress(i + 1, total);
+        renderRows();
+        setTimeout(function() { fetchNext(list, i + 1, total); }, 100);
+      }).catch(function(err) {
+        functionCode[f.id] = null;
+        log("Failed: " + f.display_name + " - " + err, "error");
+        updateProgress(i + 1, total);
+        renderRows();
+        setTimeout(function() { fetchNext(list, i + 1, total); }, 100);
+      });
+    }
+
+    function fetchFuncCode(f) {
+      return new Promise(function(resolve, reject) {
+        // Primary: v2 settings endpoint with language param
+        var url1 = "/crm/v2/settings/functions/" + f.id + "?language=" + (f.language || "deluge") + "&source=widget";
+        ZOHO.CRM.HTTP.get({ url: url1 }).then(function(resp) {
+          var code = extractCode(resp);
+          if (code) {
+            resolve(code);
+          } else {
+            // Fallback: v2.2 endpoint
+            var url2 = "/crm/v2.2/settings/functions/" + f.id + "?language=" + (f.language || "deluge");
+            ZOHO.CRM.HTTP.get({ url: url2 }).then(function(resp2) {
+              var code2 = extractCode(resp2);
+              if (code2) {
+                resolve(code2);
+              } else {
+                // Fallback: try without language param
+                var url3 = "/crm/v2/settings/functions/" + f.id;
+                ZOHO.CRM.HTTP.get({ url: url3 }).then(function(resp3) {
+                  var code3 = extractCode(resp3);
+                  if (code3) {
+                    resolve(code3);
+                  } else {
+                    reject("No code in response");
+                  }
+                }).catch(function(e) { reject(e); });
+              }
+            }).catch(function(e) { reject(e); });
+          }
+        }).catch(function(e) {
+          reject(e);
+        });
+      });
+    }
+
+    function extractCode(resp) {
+      var data;
+      if (typeof resp === "string") {
+        try { data = JSON.parse(resp); } catch(e) { return resp.length > 10 ? resp : null; }
+      } else {
+        data = resp;
+      }
+
+      // The response shape can vary. Try common paths.
+      if (data.functions && data.functions.length > 0) {
+        var fn = data.functions[0];
+        return fn.script || fn.code || fn.source || fn.workflow_function_script || null;
+      }
+      if (data.custom_functions && data.custom_functions.length > 0) {
+        var fn2 = data.custom_functions[0];
+        return fn2.script || fn2.code || fn2.source || null;
+      }
+      if (data.script) return data.script;
+      if (data.code && typeof data.code === "string" && data.code.length > 20) return data.code;
+      if (data.source) return data.source;
+
+      return null;
+    }
+
+    function updateProgress(done, total) {
+      var pct = Math.round((done / total) * 100);
+      var bar = document.getElementById("progressBar");
+      if (bar) bar.style.width = pct + "%";
+      setStatus(
+        'Fetching: <span class="count">' + done + '</span> / ' + total +
+        '<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:' + pct + '%"></div></div>'
+      );
+    }
+
+    function onFetchComplete(total) {
+      var fetched = 0;
+      var errors = 0;
+      for (var id in functionCode) {
+        if (functionCode[id] !== null) fetched++;
+        else errors++;
+      }
+
+      log("Fetch complete: " + fetched + " succeeded, " + errors + " failed", fetched > 0 ? "success" : "error");
+      setStatus(
+        '<span class="count">' + fetched + '</span> functions with code ready' +
+        (errors > 0 ? ' &middot; <span style="color:var(--danger)">' + errors + ' failed</span>' : '')
+      );
+
+      document.getElementById("btnFetch").disabled = false;
+      document.getElementById("btnExport").disabled = fetched === 0;
+    }
+
+    // ---- Export ----
+    function exportJSON() {
+      var selected = getSelectedIndices();
+      var exportData = {
+        export_info: {
+          tool: "Woggle Function Exporter",
+          version: "1.0.0",
+          exported_at: new Date().toISOString(),
+          org_name: orgInfo.company_name || orgInfo.domain || "Unknown",
+          org_id: orgInfo.zgid || orgInfo.id || "",
+          total_functions: selected.length,
+          functions_with_code: 0,
+          functions_without_code: 0
+        },
+        functions: []
+      };
+
+      for (var i = 0; i < selected.length; i++) {
+        var idx = selected[i];
+        var f = allFunctions[idx];
+        var code = functionCode[f.id];
+        var hasCode = code !== undefined && code !== null;
+
+        if (hasCode) exportData.export_info.functions_with_code++;
+        else exportData.export_info.functions_without_code++;
+
+        exportData.functions.push({
+          id: f.id,
+          display_name: f.display_name,
+          api_name: f.api_name,
+          category: f.category,
+          language: f.language,
+          description: f.description,
+          created_by: f.created_by,
+          created_time: f.created_time,
+          modified_by: f.modified_by,
+          modified_time: f.modified_time,
+          code: hasCode ? code : null,
+          code_fetched: hasCode
+        });
+      }
+
+      var json = JSON.stringify(exportData, null, 2);
+      var blob = new Blob([json], { type: "application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+
+      var orgSlug = (orgInfo.company_name || orgInfo.domain || "crm")
+        .replace(/[^a-zA-Z0-9]/g, "_")
+        .replace(/_+/g, "_")
+        .toLowerCase()
+        .substring(0, 30);
+      var dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+
+      a.href = url;
+      a.download = "functions_" + orgSlug + "_" + dateStr + ".json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      log("Exported " + exportData.functions.length + " functions to JSON", "success");
+    }
+
+    // ---- Helpers ----
+    function getSelectedIndices() {
+      var boxes = document.querySelectorAll(".func-check:checked");
+      var indices = [];
+      for (var i = 0; i < boxes.length; i++) {
+        indices.push(parseInt(boxes[i].getAttribute("data-idx"), 10));
+      }
+      return indices;
+    }
+
+    function setStatus(html) {
+      document.getElementById("statusBar").innerHTML = html;
+    }
+
+    function escHtml(str) {
+      var div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function showLog() {
+      document.getElementById("logPanel").classList.add("visible");
+    }
+
+    function log(msg, type) {
+      var panel = document.getElementById("logPanel");
+      var entry = document.createElement("div");
+      entry.className = "log-entry " + (type || "");
+      var ts = new Date().toLocaleTimeString();
+      entry.textContent = "[" + ts + "] " + msg;
+      panel.appendChild(entry);
+      panel.scrollTop = panel.scrollHeight;
+    }
+  </script>
+
+</body>
+</html>
