@@ -295,6 +295,16 @@
     }
     .select-all-wrap input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
 
+    .version-label {
+      position: fixed;
+      bottom: 8px;
+      right: 12px;
+      font-size: 10px;
+      color: var(--text-muted);
+      opacity: 0.6;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    }
+
     .debug-raw {
       margin-top: 8px;
       background: #0a0b0f;
@@ -365,6 +375,7 @@
     <p>No functions found matching your filters.</p>
   </div>
 
+  <div class="version-label">v1.1.0</div>
   <div class="log-panel" id="logPanel"></div>
   <div class="debug-raw" id="debugRaw"></div>
 
