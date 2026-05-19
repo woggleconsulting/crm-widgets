@@ -65,6 +65,7 @@
       display: flex;
       gap: 8px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -99,6 +100,14 @@
       border-color: var(--success);
       color: #fff;
     }
+
+    .btn-warn {
+      background: transparent;
+      border-color: var(--warn);
+      color: var(--warn);
+      font-size: 11px;
+    }
+    .btn-warn:hover { background: rgba(253,203,110,0.1); }
 
     .status-bar {
       background: var(--surface);
@@ -266,19 +275,18 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      max-height: 120px;
+      max-height: 300px;
       overflow-y: auto;
       padding: 8px 12px;
-      font-family: "SF Mono", "Fira Code", monospace;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
       font-size: 11px;
       color: var(--text-muted);
-      display: none;
     }
-    .log-panel.visible { display: block; }
-    .log-entry { padding: 1px 0; }
+    .log-entry { padding: 2px 0; word-break: break-all; }
     .log-entry.error { color: var(--danger); }
     .log-entry.success { color: var(--success); }
     .log-entry.info { color: var(--accent); }
+    .log-entry.debug { color: var(--warn); }
 
     .select-all-wrap {
       display: flex;
@@ -286,6 +294,23 @@
       gap: 4px;
     }
     .select-all-wrap input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+
+    .debug-raw {
+      margin-top: 8px;
+      background: #0a0b0f;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      display: none;
+    }
+    .debug-raw.visible { display: block; }
   </style>
 </head>
 <body>
@@ -296,6 +321,9 @@
       <span id="orgName">loading...</span>
     </h1>
     <div class="controls">
+      <button class="btn btn-warn" id="btnDebug" onclick="toggleDebug()">
+        &#x1f41b; Debug
+      </button>
       <button class="btn" id="btnRefresh" onclick="loadFunctions()" disabled>
         &#x21bb; Refresh
       </button>
@@ -309,7 +337,7 @@
   </div>
 
   <div class="status-bar" id="statusBar">
-    <span>Initializing...</span>
+    <span>Initializing SDK...</span>
   </div>
 
   <div class="filter-bar" id="filterBar" style="display:none;">
@@ -338,40 +366,95 @@
   </div>
 
   <div class="log-panel" id="logPanel"></div>
+  <div class="debug-raw" id="debugRaw"></div>
 
   <script>
     // ---- State ----
-    let allFunctions = [];
-    let functionCode = {};
-    let filteredIds = [];
-    let orgInfo = {};
+    var allFunctions = [];
+    var functionCode = {};
+    var filteredIds = [];
+    var orgInfo = {};
+    var apiDomain = "";
+    var debugMode = false;
+
+    // ---- Debug toggle ----
+    function toggleDebug() {
+      debugMode = !debugMode;
+      document.getElementById("btnDebug").style.borderColor = debugMode ? "var(--warn)" : "var(--border)";
+      document.getElementById("btnDebug").style.background = debugMode ? "rgba(253,203,110,0.1)" : "transparent";
+      document.getElementById("debugRaw").classList.toggle("visible", debugMode);
+      if (debugMode) {
+        log("Debug mode ON -- raw API responses will be shown below", "debug");
+      }
+    }
+
+    function debugLog(label, data) {
+      if (!debugMode) return;
+      var panel = document.getElementById("debugRaw");
+      var str;
+      try {
+        str = typeof data === "string" ? data : JSON.stringify(data, null, 2);
+      } catch(e) {
+        str = String(data);
+      }
+      if (str.length > 5000) str = str.substring(0, 5000) + "\n... [truncated]";
+      panel.textContent += "\n=== " + label + " ===\n" + str + "\n";
+      panel.scrollTop = panel.scrollHeight;
+    }
 
     // ---- Init ----
     ZOHO.embeddedApp.on("PageLoad", function(data) {
-      // no-op, we init on SDK ready
+      log("PageLoad event received", "info");
+      debugLog("PageLoad data", data);
     });
 
     ZOHO.embeddedApp.init().then(function() {
-      log("SDK initialized", "info");
-      loadOrgInfo();
-      loadFunctions();
-    });
+      log("SDK initialized successfully", "success");
 
-    // ---- Org Info ----
-    function loadOrgInfo() {
       ZOHO.CRM.CONFIG.getOrgInfo().then(function(data) {
+        debugLog("getOrgInfo response", data);
+
         if (data && data.org && data.org.length > 0) {
           orgInfo = data.org[0];
-          document.getElementById("orgName").textContent = orgInfo.company_name || orgInfo.domain || "CRM";
         } else if (data && data.org) {
           orgInfo = data.org;
-          document.getElementById("orgName").textContent = orgInfo.company_name || orgInfo.domain || "CRM";
         }
+
+        var orgName = orgInfo.company_name || orgInfo.domain || "CRM";
+        document.getElementById("orgName").textContent = orgName;
+        log("Org: " + orgName, "info");
+
+        // Determine API domain from org info or window context
+        if (orgInfo.api_domain) {
+          apiDomain = orgInfo.api_domain;
+        } else if (orgInfo.domain_name) {
+          apiDomain = "https://www.zohoapis.com";
+        } else {
+          var hostname = window.location.hostname || "";
+          if (hostname.indexOf(".eu") > -1) apiDomain = "https://www.zohoapis.eu";
+          else if (hostname.indexOf(".in") > -1) apiDomain = "https://www.zohoapis.in";
+          else if (hostname.indexOf(".com.au") > -1) apiDomain = "https://www.zohoapis.com.au";
+          else if (hostname.indexOf(".com.cn") > -1) apiDomain = "https://www.zohoapis.com.cn";
+          else if (hostname.indexOf(".jp") > -1) apiDomain = "https://www.zohoapis.jp";
+          else apiDomain = "https://www.zohoapis.com";
+        }
+
+        log("API domain: " + apiDomain, "info");
+        loadFunctions();
+
       }).catch(function(err) {
-        log("Could not load org info: " + JSON.stringify(err), "error");
-        document.getElementById("orgName").textContent = "CRM";
+        log("Org info error: " + JSON.stringify(err), "error");
+        debugLog("Org info error", err);
+        apiDomain = "https://www.zohoapis.com";
+        log("Defaulting API domain to: " + apiDomain, "info");
+        loadFunctions();
       });
-    }
+
+    }).catch(function(err) {
+      log("SDK init FAILED: " + JSON.stringify(err), "error");
+      debugLog("SDK init error", err);
+      setStatus("SDK initialization failed. Is this running inside Zoho CRM?");
+    });
 
     // ---- Load Function List ----
     function loadFunctions() {
@@ -382,67 +465,97 @@
       allFunctions = [];
       functionCode = {};
 
-      fetchFunctionPage(1);
+      log("Attempt 1: absolute URL with type=org", "info");
+      tryLoadMethod(
+        apiDomain + "/crm/v2/settings/functions?type=org&page=1&per_page=200",
+        "Method 1",
+        function() {
+          tryLoadMethod(
+            apiDomain + "/crm/v2/settings/functions?page=1&per_page=200",
+            "Method 2 (no type param)",
+            function() {
+              tryLoadMethod(
+                apiDomain + "/crm/v2.2/settings/functions?type=org&page=1&per_page=200",
+                "Method 3 (v2.2)",
+                function() {
+                  tryLoadMethod(
+                    apiDomain + "/crm/v2/settings/custom_functions?page=1&per_page=200",
+                    "Method 4 (custom_functions)",
+                    function() {
+                      tryLoadMethod(
+                        "/crm/v2/settings/functions?type=org&page=1&per_page=200",
+                        "Method 5 (relative URL)",
+                        function() {
+                          onAllMethodsFailed();
+                        }
+                      );
+                    }
+                  );
+                }
+              );
+            }
+          );
+        }
+      );
     }
 
-    function fetchFunctionPage(page) {
-      var reqUrl = "/crm/v2/settings/functions?type=org&page=" + page + "&per_page=200";
-      ZOHO.CRM.HTTP.get({ url: reqUrl }).then(function(resp) {
-        var data;
-        if (typeof resp === "string") {
-          try { data = JSON.parse(resp); } catch(e) { data = resp; }
-        } else {
-          data = resp;
-        }
+    function tryLoadMethod(url, label, onFail) {
+      log(label + ": GET " + url, "debug");
 
-        var funcs = data.functions || data.custom_functions || [];
-        if (funcs.length === 0 && page === 1) {
-          // Try alternate endpoint
-          fetchFunctionAlt();
-          return;
-        }
-
-        for (var i = 0; i < funcs.length; i++) {
-          allFunctions.push(normFunc(funcs[i]));
-        }
-
-        var info = data.info;
-        if (info && info.more_records === true) {
-          fetchFunctionPage(page + 1);
-        } else {
+      ZOHO.CRM.HTTP.get({ url: url }).then(function(resp) {
+        debugLog(label + " response (type: " + typeof resp + ")", resp);
+        var funcs = parseFunctionList(resp);
+        if (funcs.length > 0) {
+          allFunctions = funcs;
+          log(label + " succeeded: " + funcs.length + " functions", "success");
           onFunctionsLoaded();
+        } else {
+          log(label + " returned 0 functions", "info");
+          onFail();
         }
       }).catch(function(err) {
-        log("Error loading functions (page " + page + "): " + JSON.stringify(err), "error");
-        if (page === 1) {
-          fetchFunctionAlt();
-        } else {
-          onFunctionsLoaded();
-        }
+        log(label + " failed: " + JSON.stringify(err), "error");
+        debugLog(label + " error", err);
+        onFail();
       });
     }
 
-    function fetchFunctionAlt() {
-      log("Trying alternate endpoint...", "info");
-      var reqUrl = "/crm/v2.2/settings/functions?type=org&page=1&per_page=200";
-      ZOHO.CRM.HTTP.get({ url: reqUrl }).then(function(resp) {
-        var data;
-        if (typeof resp === "string") {
-          try { data = JSON.parse(resp); } catch(e) { data = resp; }
-        } else {
-          data = resp;
-        }
+    function onAllMethodsFailed() {
+      setStatus("Could not load functions. Click Debug, then Refresh to see raw API responses.");
+      document.getElementById("btnRefresh").disabled = false;
+      if (!debugMode) {
+        toggleDebug();
+      }
+    }
 
-        var funcs = data.functions || data.custom_functions || [];
-        for (var i = 0; i < funcs.length; i++) {
-          allFunctions.push(normFunc(funcs[i]));
+    // ---- Parse response ----
+    function parseFunctionList(resp) {
+      var data;
+      if (typeof resp === "string") {
+        try { data = JSON.parse(resp); } catch(e) {
+          log("Response is not valid JSON, raw length: " + resp.length, "debug");
+          return [];
         }
-        onFunctionsLoaded();
-      }).catch(function(err) {
-        log("Alternate endpoint also failed: " + JSON.stringify(err), "error");
-        setStatus("Failed to load functions. Make sure you have admin access.");
-        document.getElementById("btnRefresh").disabled = false;
-      });
+      } else {
+        data = resp;
+      }
+
+      var funcs = data.functions || data.custom_functions || data.data || [];
+
+      if (funcs.length === 0) {
+        // Log all top-level keys to help debug
+        var keys = Object.keys(data);
+        log("Response keys: " + keys.join(", "), "debug");
+        if (data.status) {
+          log("API status: " + data.status + " / code: " + (data.code || "n/a") + " / message: " + (data.message || "n/a"), "debug");
+        }
+      }
+
+      var result = [];
+      for (var i = 0; i < funcs.length; i++) {
+        result.push(normFunc(funcs[i]));
+      }
+      return result;
     }
 
     function normFunc(f) {
@@ -462,7 +575,7 @@
     }
 
     function onFunctionsLoaded() {
-      log("Loaded " + allFunctions.length + " functions", "success");
+      log("Total loaded: " + allFunctions.length + " functions", "success");
       setStatus('<span class="count">' + allFunctions.length + '</span> functions found');
       document.getElementById("btnRefresh").disabled = false;
       document.getElementById("btnFetch").disabled = allFunctions.length === 0;
@@ -521,7 +634,7 @@
       for (var i = 0; i < filteredIds.length; i++) {
         var idx = filteredIds[i];
         var f = allFunctions[idx];
-        var hasCode = functionCode[f.id] !== undefined;
+        var hasCode = functionCode[f.id] !== undefined && functionCode[f.id] !== null;
         var hasError = functionCode[f.id] === null;
 
         var catClass = "cat-other";
@@ -540,7 +653,7 @@
         row.className = "func-row";
         row.innerHTML =
           '<div><input type="checkbox" data-idx="' + idx + '" class="func-check" checked></div>' +
-          '<div class="func-name" title="' + escHtml(f.api_name) + '">' + escHtml(f.display_name) + '</div>' +
+          '<div class="func-name" title="' + escHtml(f.api_name || f.display_name) + '">' + escHtml(f.display_name || f.api_name) + '</div>' +
           '<div><span class="func-category ' + catClass + '">' + escHtml(f.category) + '</span></div>' +
           '<div class="func-lang">' + escHtml(f.language) + '</div>' +
           '<div class="func-status"><span class="dot ' + statusDot + '"></span> ' + statusText + '</div>';
@@ -567,18 +680,14 @@
 
       document.getElementById("btnFetch").disabled = true;
       document.getElementById("btnExport").disabled = true;
-      showLog();
       log("Fetching code for " + selected.length + " functions...", "info");
 
       var total = selected.length;
-      var done = 0;
-
       setStatus(
         'Fetching: <span class="count">0</span> / ' + total +
         '<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>'
       );
 
-      // Process sequentially to avoid rate limits
       fetchNext(selected, 0, total);
     }
 
@@ -591,53 +700,43 @@
       var idx = list[i];
       var f = allFunctions[idx];
 
-      // Try multiple endpoints to get the function code
       fetchFuncCode(f).then(function(code) {
         functionCode[f.id] = code;
         log("Fetched: " + f.display_name, "success");
         updateProgress(i + 1, total);
         renderRows();
-        setTimeout(function() { fetchNext(list, i + 1, total); }, 100);
+        setTimeout(function() { fetchNext(list, i + 1, total); }, 150);
       }).catch(function(err) {
         functionCode[f.id] = null;
-        log("Failed: " + f.display_name + " - " + err, "error");
+        log("Failed: " + f.display_name + " -- " + err, "error");
         updateProgress(i + 1, total);
         renderRows();
-        setTimeout(function() { fetchNext(list, i + 1, total); }, 100);
+        setTimeout(function() { fetchNext(list, i + 1, total); }, 150);
       });
     }
 
     function fetchFuncCode(f) {
       return new Promise(function(resolve, reject) {
-        // Primary: v2 settings endpoint with language param
-        var url1 = "/crm/v2/settings/functions/" + f.id + "?language=" + (f.language || "deluge") + "&source=widget";
+        var url1 = apiDomain + "/crm/v2/settings/functions/" + f.id + "?language=" + (f.language || "deluge");
         ZOHO.CRM.HTTP.get({ url: url1 }).then(function(resp) {
+          debugLog("Code fetch for " + f.display_name, resp);
           var code = extractCode(resp);
           if (code) {
             resolve(code);
           } else {
-            // Fallback: v2.2 endpoint
-            var url2 = "/crm/v2.2/settings/functions/" + f.id + "?language=" + (f.language || "deluge");
+            var url2 = apiDomain + "/crm/v2/settings/functions/" + f.id;
             ZOHO.CRM.HTTP.get({ url: url2 }).then(function(resp2) {
+              debugLog("Code fetch (no lang) for " + f.display_name, resp2);
               var code2 = extractCode(resp2);
               if (code2) {
                 resolve(code2);
               } else {
-                // Fallback: try without language param
-                var url3 = "/crm/v2/settings/functions/" + f.id;
-                ZOHO.CRM.HTTP.get({ url: url3 }).then(function(resp3) {
-                  var code3 = extractCode(resp3);
-                  if (code3) {
-                    resolve(code3);
-                  } else {
-                    reject("No code in response");
-                  }
-                }).catch(function(e) { reject(e); });
+                reject("No code in response");
               }
-            }).catch(function(e) { reject(e); });
+            }).catch(function(e) { reject(JSON.stringify(e)); });
           }
         }).catch(function(e) {
-          reject(e);
+          reject(JSON.stringify(e));
         });
       });
     }
@@ -645,12 +744,14 @@
     function extractCode(resp) {
       var data;
       if (typeof resp === "string") {
-        try { data = JSON.parse(resp); } catch(e) { return resp.length > 10 ? resp : null; }
+        try { data = JSON.parse(resp); } catch(e) {
+          if (resp.length > 20) return resp;
+          return null;
+        }
       } else {
         data = resp;
       }
 
-      // The response shape can vary. Try common paths.
       if (data.functions && data.functions.length > 0) {
         var fn = data.functions[0];
         return fn.script || fn.code || fn.source || fn.workflow_function_script || null;
@@ -668,8 +769,6 @@
 
     function updateProgress(done, total) {
       var pct = Math.round((done / total) * 100);
-      var bar = document.getElementById("progressBar");
-      if (bar) bar.style.width = pct + "%";
       setStatus(
         'Fetching: <span class="count">' + done + '</span> / ' + total +
         '<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:' + pct + '%"></div></div>'
@@ -680,7 +779,7 @@
       var fetched = 0;
       var errors = 0;
       for (var id in functionCode) {
-        if (functionCode[id] !== null) fetched++;
+        if (functionCode[id] !== null && functionCode[id] !== undefined) fetched++;
         else errors++;
       }
 
@@ -700,7 +799,7 @@
       var exportData = {
         export_info: {
           tool: "Woggle Function Exporter",
-          version: "1.0.0",
+          version: "1.1.0",
           exported_at: new Date().toISOString(),
           org_name: orgInfo.company_name || orgInfo.domain || "Unknown",
           org_id: orgInfo.zgid || orgInfo.id || "",
@@ -774,12 +873,8 @@
 
     function escHtml(str) {
       var div = document.createElement("div");
-      div.textContent = str;
+      div.textContent = str || "";
       return div.innerHTML;
-    }
-
-    function showLog() {
-      document.getElementById("logPanel").classList.add("visible");
     }
 
     function log(msg, type) {
