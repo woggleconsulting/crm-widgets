@@ -21,217 +21,63 @@
       --danger: #e17055;
       --radius: 8px;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 13px;
-      line-height: 1.5;
-      padding: 16px;
-      min-height: 100vh;
+      background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.5;
+      padding: 16px; min-height: 100vh;
     }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .header h1 {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .header h1 span {
-      background: var(--accent-dim);
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 500;
-      padding: 2px 8px;
-      border-radius: 12px;
-    }
-
-    .controls {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+    .header h1 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .header h1 span { background: var(--accent-dim); color: var(--accent); font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 12px; }
+    .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     .btn {
-      padding: 7px 14px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
+      padding: 7px 14px; border-radius: var(--radius); border: 1px solid var(--border);
+      background: var(--surface); color: var(--text); font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
     }
     .btn:hover { background: var(--surface-hover); border-color: var(--accent); }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn:disabled:hover { background: var(--surface); border-color: var(--border); }
-
-    .btn-primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
     .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
     .btn-primary:disabled:hover { background: var(--accent); border-color: var(--accent); }
-
-    .btn-success {
-      background: var(--success);
-      border-color: var(--success);
-      color: #fff;
-    }
-
-    .btn-warn {
-      background: transparent;
-      border-color: var(--warn);
-      color: var(--warn);
-      font-size: 11px;
-    }
-    .btn-warn:hover { background: rgba(253,203,110,0.1); }
-
+    .btn-success { background: var(--success); border-color: var(--success); color: #fff; }
+    .btn-warn { background: transparent; border-color: var(--warn); color: var(--warn); font-size: 11px; }
+    .btn-warn.active { background: rgba(253,203,110,0.1); }
     .status-bar {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 10px 14px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-      color: var(--text-muted);
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted);
     }
-
-    .status-bar .count {
-      color: var(--accent);
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .progress-wrap {
-      flex: 1;
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 2px;
-      transition: width 0.3s ease;
-      width: 0%;
-    }
-
-    .filter-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
+    .status-bar .count { color: var(--accent); font-weight: 600; font-size: 14px; }
+    .progress-wrap { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .progress-bar { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s ease; width: 0%; }
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
     .filter-bar input {
-      flex: 1;
-      min-width: 200px;
-      padding: 7px 12px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      font-size: 12px;
-      outline: none;
-      transition: border-color 0.15s;
+      flex: 1; min-width: 200px; padding: 7px 12px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 12px; outline: none;
     }
     .filter-bar input:focus { border-color: var(--accent); }
     .filter-bar input::placeholder { color: var(--text-muted); }
-
     .filter-bar select {
-      padding: 7px 12px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      font-size: 12px;
-      outline: none;
-      cursor: pointer;
+      padding: 7px 12px; border-radius: var(--radius); border: 1px solid var(--border);
+      background: var(--surface); color: var(--text); font-size: 12px; outline: none; cursor: pointer;
     }
-
-    .func-list {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
+    .func-list { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
     .func-list-header {
-      display: grid;
-      grid-template-columns: 36px 1fr 140px 100px 80px;
-      gap: 8px;
-      padding: 8px 12px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-      align-items: center;
+      display: grid; grid-template-columns: 36px 1fr 140px 100px 80px; gap: 8px; padding: 8px 12px;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); align-items: center;
     }
-
     .func-row {
-      display: grid;
-      grid-template-columns: 36px 1fr 140px 100px 80px;
-      gap: 8px;
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
-      align-items: center;
-      transition: background 0.1s;
+      display: grid; grid-template-columns: 36px 1fr 140px 100px 80px; gap: 8px; padding: 8px 12px;
+      border-bottom: 1px solid var(--border); align-items: center; transition: background 0.1s;
     }
     .func-row:last-child { border-bottom: none; }
     .func-row:hover { background: var(--surface-hover); }
-
-    .func-row input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--accent);
-      cursor: pointer;
-    }
-
-    .func-name {
-      font-weight: 500;
-      color: var(--text);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .func-category {
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      display: inline-block;
-      white-space: nowrap;
-    }
+    .func-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+    .func-name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .func-category { font-size: 11px; padding: 2px 8px; border-radius: 10px; display: inline-block; white-space: nowrap; }
     .cat-standalone { background: rgba(108,92,231,0.15); color: #a29bfe; }
     .cat-workflow { background: rgba(0,184,148,0.15); color: #55efc4; }
     .cat-button { background: rgba(253,203,110,0.15); color: #ffeaa7; }
@@ -240,87 +86,36 @@
     .cat-related_list { background: rgba(162,155,254,0.15); color: #a29bfe; }
     .cat-validation { background: rgba(253,121,168,0.15); color: #fd79a8; }
     .cat-other { background: rgba(139,143,163,0.15); color: #8b8fa3; }
-
-    .func-lang {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .func-status {
-      font-size: 11px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      display: inline-block;
-    }
+    .func-lang { font-size: 11px; color: var(--text-muted); }
+    .func-status { font-size: 11px; display: flex; align-items: center; gap: 4px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
     .dot-fetched { background: var(--success); }
     .dot-pending { background: var(--text-muted); }
     .dot-error { background: var(--danger); }
-
-    .empty-state {
-      text-align: center;
-      padding: 48px 20px;
-      color: var(--text-muted);
-    }
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
     .empty-state .icon { font-size: 32px; margin-bottom: 12px; }
-    .empty-state p { font-size: 13px; }
-
     .log-panel {
-      margin-top: 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      max-height: 300px;
-      overflow-y: auto;
-      padding: 8px 12px;
-      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-      font-size: 11px;
-      color: var(--text-muted);
+      margin-top: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      max-height: 300px; overflow-y: auto; padding: 8px 12px;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace; font-size: 11px; color: var(--text-muted);
     }
     .log-entry { padding: 2px 0; word-break: break-all; }
     .log-entry.error { color: var(--danger); }
     .log-entry.success { color: var(--success); }
     .log-entry.info { color: var(--accent); }
     .log-entry.debug { color: var(--warn); }
-
-    .select-all-wrap {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+    .select-all-wrap { display: flex; align-items: center; gap: 4px; }
     .select-all-wrap input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
-
-    .version-label {
-      position: fixed;
-      bottom: 8px;
-      right: 12px;
-      font-size: 10px;
-      color: var(--text-muted);
-      opacity: 0.6;
-      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-    }
-
     .debug-raw {
-      margin-top: 8px;
-      background: #0a0b0f;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 10px;
-      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-      font-size: 11px;
-      color: var(--text-muted);
-      max-height: 200px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      word-break: break-all;
-      display: none;
+      margin-top: 8px; background: #0a0b0f; border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 10px; font-family: "SF Mono", "Fira Code", "Consolas", monospace; font-size: 11px;
+      color: var(--text-muted); max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; display: none;
     }
     .debug-raw.visible { display: block; }
+    .version-label {
+      position: fixed; bottom: 8px; right: 12px; font-size: 10px;
+      color: var(--text-muted); opacity: 0.6; font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    }
   </style>
 </head>
 <body>
@@ -331,41 +126,24 @@
       <span id="orgName">loading...</span>
     </h1>
     <div class="controls">
-      <button class="btn btn-warn" id="btnDebug" onclick="toggleDebug()">
-        &#x1f41b; Debug
-      </button>
-      <button class="btn" id="btnRefresh" onclick="loadFunctions()" disabled>
-        &#x21bb; Refresh
-      </button>
-      <button class="btn btn-primary" id="btnFetch" onclick="fetchAllCode()" disabled>
-        &#x2193; Fetch Code
-      </button>
-      <button class="btn btn-success" id="btnExport" onclick="exportJSON()" disabled>
-        &#x2913; Export JSON
-      </button>
+      <button class="btn btn-warn" id="btnDebug" onclick="toggleDebug()">&#x1f41b; Debug</button>
+      <button class="btn" id="btnRefresh" onclick="loadFunctions()" disabled>&#x21bb; Refresh</button>
+      <button class="btn btn-primary" id="btnFetch" onclick="fetchAllCode()" disabled>&#x2193; Fetch Code</button>
+      <button class="btn btn-success" id="btnExport" onclick="exportJSON()" disabled>&#x2913; Export JSON</button>
     </div>
   </div>
 
-  <div class="status-bar" id="statusBar">
-    <span>Initializing SDK...</span>
-  </div>
+  <div class="status-bar" id="statusBar"><span>Initializing SDK...</span></div>
 
   <div class="filter-bar" id="filterBar" style="display:none;">
     <input type="text" id="searchInput" placeholder="Search functions..." oninput="applyFilters()">
-    <select id="categoryFilter" onchange="applyFilters()">
-      <option value="">All Categories</option>
-    </select>
+    <select id="categoryFilter" onchange="applyFilters()"><option value="">All Categories</option></select>
   </div>
 
   <div class="func-list" id="funcList" style="display:none;">
     <div class="func-list-header">
-      <div class="select-all-wrap">
-        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" checked>
-      </div>
-      <div>Function Name</div>
-      <div>Category</div>
-      <div>Language</div>
-      <div>Status</div>
+      <div class="select-all-wrap"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()" checked></div>
+      <div>Function Name</div><div>Category</div><div>Language</div><div>Status</div>
     </div>
     <div id="funcRows"></div>
   </div>
@@ -375,42 +153,62 @@
     <p>No functions found matching your filters.</p>
   </div>
 
-  <div class="version-label">v1.1.0</div>
+  <div class="version-label">v1.2.0</div>
   <div class="log-panel" id="logPanel"></div>
   <div class="debug-raw" id="debugRaw"></div>
 
   <script>
-    // ---- State ----
+    var VERSION = "1.2.0";
     var allFunctions = [];
     var functionCode = {};
     var filteredIds = [];
     var orgInfo = {};
-    var apiDomain = "";
     var debugMode = false;
+    // Which URL pattern worked for listing, so we reuse it for code fetch
+    var workingBaseUrl = "";
 
-    // ---- Debug toggle ----
+    // ---- Debug ----
     function toggleDebug() {
       debugMode = !debugMode;
-      document.getElementById("btnDebug").style.borderColor = debugMode ? "var(--warn)" : "var(--border)";
-      document.getElementById("btnDebug").style.background = debugMode ? "rgba(253,203,110,0.1)" : "transparent";
+      var btn = document.getElementById("btnDebug");
+      btn.classList.toggle("active", debugMode);
       document.getElementById("debugRaw").classList.toggle("visible", debugMode);
-      if (debugMode) {
-        log("Debug mode ON -- raw API responses will be shown below", "debug");
-      }
+      if (debugMode) log("Debug mode ON", "debug");
     }
 
     function debugLog(label, data) {
       if (!debugMode) return;
       var panel = document.getElementById("debugRaw");
       var str;
-      try {
-        str = typeof data === "string" ? data : JSON.stringify(data, null, 2);
-      } catch(e) {
-        str = String(data);
-      }
-      if (str.length > 5000) str = str.substring(0, 5000) + "\n... [truncated]";
+      try { str = typeof data === "string" ? data : JSON.stringify(data, null, 2); }
+      catch(e) { str = String(data); }
+      if (str.length > 8000) str = str.substring(0, 8000) + "\n... [truncated]";
       panel.textContent += "\n=== " + label + " ===\n" + str + "\n";
       panel.scrollTop = panel.scrollHeight;
+    }
+
+    // ---- Unwrap SDK response ----
+    // ZOHO.CRM.HTTP.get() with relative URLs returns {status_code, response}
+    // where response is a JSON string of the actual API payload.
+    function unwrapResponse(resp) {
+      var data;
+      if (typeof resp === "string") {
+        try { data = JSON.parse(resp); } catch(e) { return resp; }
+      } else {
+        data = resp;
+      }
+
+      // Check for SDK envelope: {status_code: 200, response: "..."}
+      if (data.status_code !== undefined && data.response !== undefined) {
+        log("Unwrapping SDK envelope (status_code: " + data.status_code + ")", "debug");
+        var inner = data.response;
+        if (typeof inner === "string") {
+          try { return JSON.parse(inner); } catch(e) { return inner; }
+        }
+        return inner;
+      }
+
+      return data;
     }
 
     // ---- Init ----
@@ -420,54 +218,30 @@
     });
 
     ZOHO.embeddedApp.init().then(function() {
-      log("SDK initialized successfully", "success");
+      log("SDK initialized (v" + VERSION + ")", "success");
 
       ZOHO.CRM.CONFIG.getOrgInfo().then(function(data) {
-        debugLog("getOrgInfo response", data);
+        debugLog("getOrgInfo", data);
+        if (data && data.org && data.org.length > 0) orgInfo = data.org[0];
+        else if (data && data.org) orgInfo = data.org;
 
-        if (data && data.org && data.org.length > 0) {
-          orgInfo = data.org[0];
-        } else if (data && data.org) {
-          orgInfo = data.org;
-        }
-
-        var orgName = orgInfo.company_name || orgInfo.domain || "CRM";
-        document.getElementById("orgName").textContent = orgName;
-        log("Org: " + orgName, "info");
-
-        // Determine API domain from org info or window context
-        if (orgInfo.api_domain) {
-          apiDomain = orgInfo.api_domain;
-        } else if (orgInfo.domain_name) {
-          apiDomain = "https://www.zohoapis.com";
-        } else {
-          var hostname = window.location.hostname || "";
-          if (hostname.indexOf(".eu") > -1) apiDomain = "https://www.zohoapis.eu";
-          else if (hostname.indexOf(".in") > -1) apiDomain = "https://www.zohoapis.in";
-          else if (hostname.indexOf(".com.au") > -1) apiDomain = "https://www.zohoapis.com.au";
-          else if (hostname.indexOf(".com.cn") > -1) apiDomain = "https://www.zohoapis.com.cn";
-          else if (hostname.indexOf(".jp") > -1) apiDomain = "https://www.zohoapis.jp";
-          else apiDomain = "https://www.zohoapis.com";
-        }
-
-        log("API domain: " + apiDomain, "info");
+        document.getElementById("orgName").textContent = orgInfo.company_name || orgInfo.domain || "CRM";
+        log("Org: " + (orgInfo.company_name || orgInfo.domain || "unknown"), "info");
         loadFunctions();
 
       }).catch(function(err) {
         log("Org info error: " + JSON.stringify(err), "error");
-        debugLog("Org info error", err);
-        apiDomain = "https://www.zohoapis.com";
-        log("Defaulting API domain to: " + apiDomain, "info");
         loadFunctions();
       });
 
     }).catch(function(err) {
       log("SDK init FAILED: " + JSON.stringify(err), "error");
-      debugLog("SDK init error", err);
       setStatus("SDK initialization failed. Is this running inside Zoho CRM?");
     });
 
-    // ---- Load Function List ----
+    // ---- Load Functions ----
+    // Only use relative URLs -- the SDK authenticates these automatically.
+    // Absolute URLs to zohoapis.com go through a raw proxy without auth tokens.
     function loadFunctions() {
       setStatus("Loading functions...");
       document.getElementById("btnRefresh").disabled = true;
@@ -476,89 +250,70 @@
       allFunctions = [];
       functionCode = {};
 
-      log("Attempt 1: absolute URL with type=org", "info");
-      tryLoadMethod(
-        apiDomain + "/crm/v2/settings/functions?type=org&page=1&per_page=200",
-        "Method 1",
-        function() {
-          tryLoadMethod(
-            apiDomain + "/crm/v2/settings/functions?page=1&per_page=200",
-            "Method 2 (no type param)",
-            function() {
-              tryLoadMethod(
-                apiDomain + "/crm/v2.2/settings/functions?type=org&page=1&per_page=200",
-                "Method 3 (v2.2)",
-                function() {
-                  tryLoadMethod(
-                    apiDomain + "/crm/v2/settings/custom_functions?page=1&per_page=200",
-                    "Method 4 (custom_functions)",
-                    function() {
-                      tryLoadMethod(
-                        "/crm/v2/settings/functions?type=org&page=1&per_page=200",
-                        "Method 5 (relative URL)",
-                        function() {
-                          onAllMethodsFailed();
-                        }
-                      );
-                    }
-                  );
-                }
-              );
-            }
-          );
-        }
-      );
+      var methods = [
+        { url: "/crm/v2/settings/functions?type=org&page=1&per_page=200", label: "v2 type=org" },
+        { url: "/crm/v2/settings/functions?page=1&per_page=200", label: "v2 no type" },
+        { url: "/crm/v2.2/settings/functions?type=org&page=1&per_page=200", label: "v2.2 type=org" },
+        { url: "/crm/v2.2/settings/functions?page=1&per_page=200", label: "v2.2 no type" },
+        { url: "/crm/v7/settings/functions?type=org&page=1&per_page=200", label: "v7 type=org" },
+        { url: "/crm/v8/settings/functions?type=org&page=1&per_page=200", label: "v8 type=org" },
+      ];
+
+      tryNext(methods, 0);
     }
 
-    function tryLoadMethod(url, label, onFail) {
-      log(label + ": GET " + url, "debug");
+    function tryNext(methods, i) {
+      if (i >= methods.length) {
+        onAllMethodsFailed();
+        return;
+      }
 
-      ZOHO.CRM.HTTP.get({ url: url }).then(function(resp) {
-        debugLog(label + " response (type: " + typeof resp + ")", resp);
-        var funcs = parseFunctionList(resp);
+      var m = methods[i];
+      log("Try " + (i + 1) + "/" + methods.length + " [" + m.label + "]: " + m.url, "debug");
+
+      ZOHO.CRM.HTTP.get({ url: m.url }).then(function(resp) {
+        debugLog(m.label + " raw response", resp);
+        var data = unwrapResponse(resp);
+        debugLog(m.label + " unwrapped", data);
+
+        var funcs = parseFunctionList(data);
         if (funcs.length > 0) {
           allFunctions = funcs;
-          log(label + " succeeded: " + funcs.length + " functions", "success");
+          workingBaseUrl = m.url.split("?")[0].replace(/\/functions$/, "");
+          log(m.label + " succeeded: " + funcs.length + " functions (base: " + workingBaseUrl + ")", "success");
           onFunctionsLoaded();
         } else {
-          log(label + " returned 0 functions", "info");
-          onFail();
+          log(m.label + ": 0 functions", "info");
+          tryNext(methods, i + 1);
         }
       }).catch(function(err) {
-        log(label + " failed: " + JSON.stringify(err), "error");
-        debugLog(label + " error", err);
-        onFail();
+        log(m.label + " error: " + JSON.stringify(err), "error");
+        debugLog(m.label + " error", err);
+        tryNext(methods, i + 1);
       });
     }
 
     function onAllMethodsFailed() {
-      setStatus("Could not load functions. Click Debug, then Refresh to see raw API responses.");
+      setStatus("Could not load functions. Enable Debug and click Refresh to see raw responses.");
       document.getElementById("btnRefresh").disabled = false;
-      if (!debugMode) {
-        toggleDebug();
-      }
+      if (!debugMode) toggleDebug();
     }
 
-    // ---- Parse response ----
-    function parseFunctionList(resp) {
-      var data;
-      if (typeof resp === "string") {
-        try { data = JSON.parse(resp); } catch(e) {
-          log("Response is not valid JSON, raw length: " + resp.length, "debug");
-          return [];
-        }
-      } else {
-        data = resp;
+    // ---- Parse ----
+    function parseFunctionList(data) {
+      if (!data || typeof data !== "object") {
+        log("Response is not an object", "debug");
+        return [];
       }
 
+      // Try all known keys
       var funcs = data.functions || data.custom_functions || data.data || [];
 
       if (funcs.length === 0) {
-        // Log all top-level keys to help debug
         var keys = Object.keys(data);
         log("Response keys: " + keys.join(", "), "debug");
         if (data.status) {
-          log("API status: " + data.status + " / code: " + (data.code || "n/a") + " / message: " + (data.message || "n/a"), "debug");
+          log("API: status=" + data.status + " code=" + (data.code || "n/a") + " msg=" + (data.message || "n/a"), "debug");
         }
       }
 
@@ -586,11 +341,10 @@
     }
 
     function onFunctionsLoaded() {
-      log("Total loaded: " + allFunctions.length + " functions", "success");
+      log("Loaded " + allFunctions.length + " functions total", "success");
       setStatus('<span class="count">' + allFunctions.length + '</span> functions found');
       document.getElementById("btnRefresh").disabled = false;
       document.getElementById("btnFetch").disabled = allFunctions.length === 0;
-
       populateCategoryFilter();
       applyFilters();
       document.getElementById("filterBar").style.display = allFunctions.length > 0 ? "flex" : "none";
@@ -600,9 +354,7 @@
     // ---- Category filter ----
     function populateCategoryFilter() {
       var cats = {};
-      for (var i = 0; i < allFunctions.length; i++) {
-        cats[allFunctions[i].category] = true;
-      }
+      for (var i = 0; i < allFunctions.length; i++) cats[allFunctions[i].category] = true;
       var sel = document.getElementById("categoryFilter");
       sel.innerHTML = '<option value="">All Categories</option>';
       Object.keys(cats).sort().forEach(function(c) {
@@ -613,11 +365,10 @@
       });
     }
 
-    // ---- Filtering & Rendering ----
+    // ---- Filter & Render ----
     function applyFilters() {
       var search = document.getElementById("searchInput").value.toLowerCase();
       var cat = document.getElementById("categoryFilter").value;
-
       filteredIds = [];
       for (var i = 0; i < allFunctions.length; i++) {
         var f = allFunctions[i];
@@ -625,20 +376,17 @@
         if (search && f.display_name.toLowerCase().indexOf(search) === -1 && f.api_name.toLowerCase().indexOf(search) === -1) continue;
         filteredIds.push(i);
       }
-
       renderRows();
     }
 
     function renderRows() {
       var container = document.getElementById("funcRows");
       container.innerHTML = "";
-
       if (filteredIds.length === 0) {
         document.getElementById("funcList").style.display = "none";
         document.getElementById("emptyState").style.display = "block";
         return;
       }
-
       document.getElementById("funcList").style.display = "block";
       document.getElementById("emptyState").style.display = "none";
 
@@ -647,14 +395,13 @@
         var f = allFunctions[idx];
         var hasCode = functionCode[f.id] !== undefined && functionCode[f.id] !== null;
         var hasError = functionCode[f.id] === null;
-
         var catClass = "cat-other";
         if (f.category === "standalone") catClass = "cat-standalone";
         else if (f.category === "workflow") catClass = "cat-workflow";
         else if (f.category === "button") catClass = "cat-button";
         else if (f.category === "blueprint") catClass = "cat-blueprint";
-        else if (f.category === "schedule" || f.category === "schedules") catClass = "cat-schedule";
-        else if (f.category === "related_list" || f.category === "relatedlist") catClass = "cat-related_list";
+        else if (f.category.indexOf("schedule") > -1) catClass = "cat-schedule";
+        else if (f.category.indexOf("related") > -1) catClass = "cat-related_list";
         else if (f.category === "validation") catClass = "cat-validation";
 
         var statusDot = hasCode ? "dot-fetched" : hasError ? "dot-error" : "dot-pending";
@@ -672,44 +419,28 @@
       }
     }
 
-    // ---- Select All ----
     function toggleSelectAll() {
       var checked = document.getElementById("selectAll").checked;
       var boxes = document.querySelectorAll(".func-check");
-      for (var i = 0; i < boxes.length; i++) {
-        boxes[i].checked = checked;
-      }
+      for (var i = 0; i < boxes.length; i++) boxes[i].checked = checked;
     }
 
     // ---- Fetch Code ----
     function fetchAllCode() {
       var selected = getSelectedIndices();
-      if (selected.length === 0) {
-        log("No functions selected", "error");
-        return;
-      }
+      if (selected.length === 0) { log("No functions selected", "error"); return; }
 
       document.getElementById("btnFetch").disabled = true;
       document.getElementById("btnExport").disabled = true;
       log("Fetching code for " + selected.length + " functions...", "info");
-
-      var total = selected.length;
-      setStatus(
-        'Fetching: <span class="count">0</span> / ' + total +
-        '<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>'
-      );
-
-      fetchNext(selected, 0, total);
+      setStatus('Fetching: <span class="count">0</span> / ' + selected.length +
+        '<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>');
+      fetchNext(selected, 0, selected.length);
     }
 
     function fetchNext(list, i, total) {
-      if (i >= list.length) {
-        onFetchComplete(total);
-        return;
-      }
-
-      var idx = list[i];
-      var f = allFunctions[idx];
+      if (i >= list.length) { onFetchComplete(total); return; }
+      var f = allFunctions[list[i]];
 
       fetchFuncCode(f).then(function(code) {
         functionCode[f.id] = code;
@@ -728,41 +459,36 @@
 
     function fetchFuncCode(f) {
       return new Promise(function(resolve, reject) {
-        var url1 = apiDomain + "/crm/v2/settings/functions/" + f.id + "?language=" + (f.language || "deluge");
-        ZOHO.CRM.HTTP.get({ url: url1 }).then(function(resp) {
-          debugLog("Code fetch for " + f.display_name, resp);
-          var code = extractCode(resp);
+        // Use the same API version base that worked for listing
+        var base = workingBaseUrl || "/crm/v2/settings";
+        var url = base + "/functions/" + f.id + "?language=" + (f.language || "deluge");
+
+        ZOHO.CRM.HTTP.get({ url: url }).then(function(resp) {
+          debugLog("Code fetch [" + f.display_name + "]", resp);
+          var data = unwrapResponse(resp);
+          debugLog("Code unwrapped [" + f.display_name + "]", data);
+          var code = extractCode(data);
           if (code) {
             resolve(code);
           } else {
-            var url2 = apiDomain + "/crm/v2/settings/functions/" + f.id;
+            // Retry without language param
+            var url2 = base + "/functions/" + f.id;
             ZOHO.CRM.HTTP.get({ url: url2 }).then(function(resp2) {
-              debugLog("Code fetch (no lang) for " + f.display_name, resp2);
-              var code2 = extractCode(resp2);
-              if (code2) {
-                resolve(code2);
-              } else {
-                reject("No code in response");
-              }
+              var data2 = unwrapResponse(resp2);
+              debugLog("Code retry [" + f.display_name + "]", data2);
+              var code2 = extractCode(data2);
+              code2 ? resolve(code2) : reject("No code in response");
             }).catch(function(e) { reject(JSON.stringify(e)); });
           }
-        }).catch(function(e) {
-          reject(JSON.stringify(e));
-        });
+        }).catch(function(e) { reject(JSON.stringify(e)); });
       });
     }
 
-    function extractCode(resp) {
-      var data;
-      if (typeof resp === "string") {
-        try { data = JSON.parse(resp); } catch(e) {
-          if (resp.length > 20) return resp;
-          return null;
-        }
-      } else {
-        data = resp;
+    function extractCode(data) {
+      if (!data || typeof data !== "object") {
+        if (typeof data === "string" && data.length > 20) return data;
+        return null;
       }
-
       if (data.functions && data.functions.length > 0) {
         var fn = data.functions[0];
         return fn.script || fn.code || fn.source || fn.workflow_function_script || null;
@@ -771,35 +497,23 @@
         var fn2 = data.custom_functions[0];
         return fn2.script || fn2.code || fn2.source || null;
       }
-      if (data.script) return data.script;
-      if (data.code && typeof data.code === "string" && data.code.length > 20) return data.code;
-      if (data.source) return data.source;
-
-      return null;
+      return data.script || (typeof data.code === "string" && data.code.length > 20 ? data.code : null) || data.source || null;
     }
 
     function updateProgress(done, total) {
       var pct = Math.round((done / total) * 100);
-      setStatus(
-        'Fetching: <span class="count">' + done + '</span> / ' + total +
-        '<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:' + pct + '%"></div></div>'
-      );
+      setStatus('Fetching: <span class="count">' + done + '</span> / ' + total +
+        '<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:' + pct + '%"></div></div>');
     }
 
     function onFetchComplete(total) {
-      var fetched = 0;
-      var errors = 0;
+      var fetched = 0, errors = 0;
       for (var id in functionCode) {
-        if (functionCode[id] !== null && functionCode[id] !== undefined) fetched++;
-        else errors++;
+        if (functionCode[id] !== null && functionCode[id] !== undefined) fetched++; else errors++;
       }
-
       log("Fetch complete: " + fetched + " succeeded, " + errors + " failed", fetched > 0 ? "success" : "error");
-      setStatus(
-        '<span class="count">' + fetched + '</span> functions with code ready' +
-        (errors > 0 ? ' &middot; <span style="color:var(--danger)">' + errors + ' failed</span>' : '')
-      );
-
+      setStatus('<span class="count">' + fetched + '</span> functions with code ready' +
+        (errors > 0 ? ' &middot; <span style="color:var(--danger)">' + errors + ' failed</span>' : ''));
       document.getElementById("btnFetch").disabled = false;
       document.getElementById("btnExport").disabled = fetched === 0;
     }
@@ -810,7 +524,7 @@
       var exportData = {
         export_info: {
           tool: "Woggle Function Exporter",
-          version: "1.1.0",
+          version: VERSION,
           exported_at: new Date().toISOString(),
           org_name: orgInfo.company_name || orgInfo.domain || "Unknown",
           org_id: orgInfo.zgid || orgInfo.id || "",
@@ -822,27 +536,15 @@
       };
 
       for (var i = 0; i < selected.length; i++) {
-        var idx = selected[i];
-        var f = allFunctions[idx];
+        var f = allFunctions[selected[i]];
         var code = functionCode[f.id];
         var hasCode = code !== undefined && code !== null;
-
-        if (hasCode) exportData.export_info.functions_with_code++;
-        else exportData.export_info.functions_without_code++;
-
+        if (hasCode) exportData.export_info.functions_with_code++; else exportData.export_info.functions_without_code++;
         exportData.functions.push({
-          id: f.id,
-          display_name: f.display_name,
-          api_name: f.api_name,
-          category: f.category,
-          language: f.language,
-          description: f.description,
-          created_by: f.created_by,
-          created_time: f.created_time,
-          modified_by: f.modified_by,
-          modified_time: f.modified_time,
-          code: hasCode ? code : null,
-          code_fetched: hasCode
+          id: f.id, display_name: f.display_name, api_name: f.api_name, category: f.category,
+          language: f.language, description: f.description, created_by: f.created_by,
+          created_time: f.created_time, modified_by: f.modified_by, modified_time: f.modified_time,
+          code: hasCode ? code : null, code_fetched: hasCode
         });
       }
 
@@ -850,54 +552,33 @@
       var blob = new Blob([json], { type: "application/json" });
       var url = URL.createObjectURL(blob);
       var a = document.createElement("a");
-
-      var orgSlug = (orgInfo.company_name || orgInfo.domain || "crm")
-        .replace(/[^a-zA-Z0-9]/g, "_")
-        .replace(/_+/g, "_")
-        .toLowerCase()
-        .substring(0, 30);
-      var dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-
+      var orgSlug = (orgInfo.company_name || orgInfo.domain || "crm").replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_").toLowerCase().substring(0, 30);
       a.href = url;
-      a.download = "functions_" + orgSlug + "_" + dateStr + ".json";
+      a.download = "functions_" + orgSlug + "_" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + ".json";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-
-      log("Exported " + exportData.functions.length + " functions to JSON", "success");
+      log("Exported " + exportData.functions.length + " functions", "success");
     }
 
     // ---- Helpers ----
     function getSelectedIndices() {
       var boxes = document.querySelectorAll(".func-check:checked");
       var indices = [];
-      for (var i = 0; i < boxes.length; i++) {
-        indices.push(parseInt(boxes[i].getAttribute("data-idx"), 10));
-      }
+      for (var i = 0; i < boxes.length; i++) indices.push(parseInt(boxes[i].getAttribute("data-idx"), 10));
       return indices;
     }
-
-    function setStatus(html) {
-      document.getElementById("statusBar").innerHTML = html;
-    }
-
-    function escHtml(str) {
-      var div = document.createElement("div");
-      div.textContent = str || "";
-      return div.innerHTML;
-    }
-
+    function setStatus(html) { document.getElementById("statusBar").innerHTML = html; }
+    function escHtml(str) { var d = document.createElement("div"); d.textContent = str || ""; return d.innerHTML; }
     function log(msg, type) {
-      var panel = document.getElementById("logPanel");
-      var entry = document.createElement("div");
-      entry.className = "log-entry " + (type || "");
-      var ts = new Date().toLocaleTimeString();
-      entry.textContent = "[" + ts + "] " + msg;
-      panel.appendChild(entry);
-      panel.scrollTop = panel.scrollHeight;
+      var p = document.getElementById("logPanel");
+      var e = document.createElement("div");
+      e.className = "log-entry " + (type || "");
+      e.textContent = "[" + new Date().toLocaleTimeString() + "] " + msg;
+      p.appendChild(e);
+      p.scrollTop = p.scrollHeight;
     }
   </script>
-
 </body>
 </html>
